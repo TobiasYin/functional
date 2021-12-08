@@ -1,4 +1,4 @@
-# funtional
+# Funtional Api for Golang
 Functional Programming support for golang.(Streaming API)
 
 The package can only be used with go 1.18. Do not try in lower version of go.
