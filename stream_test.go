@@ -2,6 +2,7 @@ package functional
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"testing"
 )
@@ -16,8 +17,10 @@ func TestStream(t *testing.T) {
 
 func TestMap(t *testing.T) {
 	data := []int{1, 2, 3, 4, 5}
-	m := Map(Stream(data), func(i int) string { return strconv.Itoa(i + 1) })
-	fmt.Println(m.Collect())
+	res := Map(Stream(data), func(i int) string { return strconv.Itoa(i + 1) }).Collect()
+
+	fmt.Println(res)
+	fmt.Println(reflect.TypeOf(res))
 }
 
 // func TestMapNew(t *testing.T) {
@@ -28,15 +31,22 @@ func TestMap(t *testing.T) {
 
 func TestFilter(t *testing.T) {
 	data := []int{1, 2, 3, 4, 5, 6, 7, 8}
-	m := Filter(Stream(data), func(i int) bool { return i%2 == 0 })
-	fmt.Println(m.Collect())
+	res := Filter(Stream(data), func(i int) bool { return i%2 == 0 }).Collect()
+	fmt.Println(res)
+}
+
+func TestFilterAndMap(t *testing.T) {
+	data := []int{1, 2, 3, 4, 5, 6, 7, 8}
+	res := Map(Filter(Stream(data), func(i int) bool { return i%2 == 0 }), func(i int) string { return strconv.Itoa(i + 1) }).Collect()
+	fmt.Println(res)
+	fmt.Println(reflect.TypeOf(res))
 }
 
 func TestReduce(t *testing.T) {
 	data := []int{1, 2, 3, 4, 5, 6, 7, 8}
-	m := ReduceFromZero(Filter(Stream(data), func(i int) bool { return i%2 == 0 }), func(i, j int) int { return i + j })
-	fmt.Println(m)
+	res1 := ReduceFromZero(Filter(Stream(data), func(i int) bool { return i%2 == 0 }), func(i, j int) int { return i + j })
+	fmt.Println(res1)
 
-	m2 := Reduce(Filter(Stream(data), func(i int) bool { return i%2 == 0 }), "0", func(i string, j int) string { return i + ", " + strconv.Itoa(j) })
-	fmt.Println(m2)
+	res2 := Reduce(Filter(Stream(data), func(i int) bool { return i%2 == 0 }), "0", func(i string, j int) string { return i + ", " + strconv.Itoa(j) })
+	fmt.Println(res2)
 }
